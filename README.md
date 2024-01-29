@@ -1,3 +1,7 @@
+I thought astro-notion-blog by otoyo is way too opinionated and could use some refactoring into a component library. This fork is here to accommodate that.
+
+# Original README:
+
 English | [日本語](README.ja.md)
 
 # astro-notion-blog
