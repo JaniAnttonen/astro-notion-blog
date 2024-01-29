@@ -1,14 +1,14 @@
 ---
-import katex from 'katex'
-import { RichText } from '../../lib/interfaces.ts'
-import Bold from './annotations/Bold.astro'
-import Italic from './annotations/Italic.astro'
-import Strikethrough from './annotations/Strikethrough.astro'
-import Underline from './annotations/Underline.astro'
-import Color from './annotations/Color.astro'
-import Code from './annotations/Code.astro'
-import Anchor from './annotations/Anchor.astro'
-import Mention from './Mention.astro'
+import katex from "katex"
+import { type RichText } from "../../lib/types/interfaces.ts"
+import Mention from "./Mention.astro"
+import Anchor from "./annotations/Anchor.astro"
+import Bold from "./annotations/Bold.astro"
+import Code from "./annotations/Code.astro"
+import Color from "./annotations/Color.astro"
+import Italic from "./annotations/Italic.astro"
+import Strikethrough from "./annotations/Strikethrough.astro"
+import Underline from "./annotations/Underline.astro"
 
 export interface Props {
   richText: RichText
@@ -32,7 +32,7 @@ const { richText } = Astro.props
                         {
                           <Bold richText={richText}>
                             {richText.Text &&
-                              richText.Text.Content.split('\n').map(
+                              richText.Text.Content.split("\n").map(
                                 (content: string, i: number) => {
                                   if (i === 0) {
                                     return content
@@ -47,10 +47,9 @@ const { richText } = Astro.props
                               )}
                             {richText.Equation && (
                               <span
-                                set:html={katex.renderToString(
-                                  richText.Equation.Expression,
-                                  { throwOnError: false }
-                                )}
+                                set:html={katex.renderToString(richText.Equation.Expression, {
+                                  throwOnError: false,
+                                })}
                               />
                             )}
                             {richText.Mention && richText.Mention.Page && (

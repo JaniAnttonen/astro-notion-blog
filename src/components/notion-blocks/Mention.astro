@@ -1,9 +1,7 @@
 ---
-import { Post } from '../../lib/interfaces.ts'
-import { getPostByPageId } from '../../lib/notion/client'
-import { getPostLink } from '../../lib/blog-helpers.ts'
-import '../../styles/notion-color.css'
-import arrow from '../../images/icon-arrow-link.svg'
+import { getPostLink } from "../../lib/blog-helpers.ts"
+import { getPostByPageId } from "../../lib/notion/client"
+import type { Post } from "../../lib/types/interfaces.ts"
 
 export interface Props {
   pageId: string
@@ -11,7 +9,7 @@ export interface Props {
 
 const { pageId } = Astro.props
 
-let post: Post = null
+let post: Post | null = null
 if (pageId) {
   post = await getPostByPageId(pageId)
 }
@@ -22,28 +20,20 @@ if (pageId) {
     <a href={getPostLink(post.Slug)} class="link">
       <>
         <span class="icon">
-          {post.Icon && post.Icon.Type === 'emoji' ? (
+          {post.Icon && "Emoji" in post.Icon ? (
             post.Icon.Emoji
-          ) : post.Icon && post.Icon.Type === 'external' ? (
-            <img
-              src={post.Icon.Url}
-              class="notion-icon"
-              alt="Post title icon in a page link"
-            />
+          ) : post.Icon && post.Icon.Type === "external" ? (
+            <img src={post.Icon.Url} class="notion-icon" alt="Post title icon in a page link" />
           ) : (
-            '📄'
+            "📄"
           )}
-          <img src={arrow.src} class="icon-link" alt="Arrow icon of a page link" />
         </span>
         <span class="text">{post.Title}</span>
       </>
     </a>
   ) : (
     <a class="link">
-      <span class="icon">
-        🚫
-        <img src={arrow.src} class="icon-link" alt="Arrow icon of a page link" />
-      </span>
+      <span class="icon">🚫</span>
       <span class="text not-found">Post not found</span>
     </a>
   )

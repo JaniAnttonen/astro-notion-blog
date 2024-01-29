@@ -1,9 +1,8 @@
 ---
-import * as interfaces from '../../lib/interfaces.ts'
-import { snakeToKebab } from '../../lib/style-helpers.ts'
-import RichText from './RichText.astro'
-import NotionBlocks from '../NotionBlocks.astro'
-import '../../styles/notion-color.css'
+import { snakeToKebab } from "../../lib/style-helpers.ts"
+import * as interfaces from "../../lib/types/interfaces.ts"
+import NotionBlocks from "../NotionBlocks.astro"
+import RichText from "./RichText.astro"
 
 export interface Props {
   block: interfaces.Block
@@ -15,12 +14,12 @@ const { block, headings } = Astro.props
 
 <p class={snakeToKebab(block.Paragraph.Color)}>
   {
-    block.Paragraph.RichTexts.map((richText: interfaces.RichText) => (
+    block.Paragraph?.RichTexts.map((richText: interfaces.RichText) => (
       <RichText richText={richText} />
     ))
   }
   {
-    block.Paragraph.Children && (
+    block.Paragraph?.Children && (
       <NotionBlocks blocks={block.Paragraph.Children} headings={headings} />
     )
   }

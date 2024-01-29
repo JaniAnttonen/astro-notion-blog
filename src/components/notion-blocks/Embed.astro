@@ -1,29 +1,22 @@
 ---
-import * as interfaces from '../../lib/interfaces.ts'
-import {
-  isTweetURL,
-  isTikTokURL,
-  isInstagramURL,
-  isPinterestURL,
-  isCodePenURL,
-} from '../../lib/blog-helpers.ts'
-import Bookmark from './Bookmark.astro'
-import TweetEmbed from './TweetEmbed.astro'
-import TikTokEmbed from './TikTokEmbed.astro'
-import InstagramEmbed from './InstagramEmbed.astro'
-import PinterestEmbed from './PinterestEmbed.astro'
-import CodePenEmbed from './CodePenEmbed.astro'
+import { isInstagramURL, isPinterestURL, isTikTokURL, isTweetURL } from "../../lib/blog-helpers.ts"
+import * as interfaces from "../../lib/types/interfaces.ts"
+import Bookmark from "./Bookmark.astro"
+import InstagramEmbed from "./InstagramEmbed.astro"
+import PinterestEmbed from "./PinterestEmbed.astro"
+import TikTokEmbed from "./TikTokEmbed.astro"
+import TweetEmbed from "./TweetEmbed.astro"
 
 export interface Props {
   block: interfaces.Block
-  urlMap: { [key: string]: string }
+  urlMap?: { [key: string]: string }
 }
 
 const { block, urlMap } = Astro.props
 
-let url: URL
+let url: URL | null = null
 try {
-  url = new URL(block.Embed.Url)
+  url = new URL(block.Embed?.Url || "")
 } catch (err) {
   console.log(err)
 }
@@ -32,15 +25,13 @@ try {
 {
   url ? (
     isTweetURL(url) ? (
-      <TweetEmbed url={url} />
+      <TweetEmbed url={url.toString()} />
     ) : isTikTokURL(url) ? (
-      <TikTokEmbed url={url} />
+      <TikTokEmbed url={url.toString()} />
     ) : isInstagramURL(url) ? (
       <InstagramEmbed url={url} />
     ) : isPinterestURL(url) ? (
-      <PinterestEmbed url={url} />
-    ) : isCodePenURL(url) ? (
-      <CodePenEmbed url={url} />
+      <PinterestEmbed url={url.toString()} />
     ) : (
       <Bookmark block={block} urlMap={urlMap} />
     )

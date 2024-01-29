@@ -1,34 +1,37 @@
 ---
-import createMetascraper from 'metascraper'
-import metascraperDescription from 'metascraper-description'
-import metascraperImage from 'metascraper-image'
-import metascraperTitle from 'metascraper-title'
-import { isAmazonURL } from '../../lib/blog-helpers.ts'
-import * as interfaces from '../../lib/interfaces.ts'
+import createMetascraper, { type Metadata } from "metascraper"
+import metascraperDescription from "metascraper-description"
+import metascraperImage from "metascraper-image"
+import metascraperTitle from "metascraper-title"
+import { isAmazonURL } from "../../lib/blog-helpers.ts"
+import * as interfaces from "../../lib/types/interfaces.ts"
 
 export interface Props {
   block: interfaces.Block
-  urlMap: { [key: string]: string }
+  urlMap?: { [key: string]: string }
 }
 
 const { block, urlMap } = Astro.props
 
-const urlString = (block.Bookmark || block.LinkPreview || block.Embed).Url
+const urlString = (block.Bookmark || block.LinkPreview || block.Embed)?.Url
 
 let url: URL
-let metadata: Record<string, string>
-try {
-  url = new URL(urlString)
+let metadata: Metadata
 
-  if (!isAmazonURL(url)) {
-    const metascraper = createMetascraper([
-      metascraperDescription(),
-      metascraperImage(),
-      metascraperTitle(),
-    ])
-    const html = urlMap[url.toString()]
-    if (html) {
-      metadata = await metascraper({ html, url })
+try {
+  if (urlString) {
+    url = new URL(urlString)
+
+    if (!isAmazonURL(url)) {
+      const metascraper = createMetascraper([
+        metascraperDescription(),
+        metascraperImage(),
+        metascraperTitle(),
+      ])
+      const html = urlMap && urlMap[url.toString()]
+      if (html) {
+        metadata = await metascraper({ html: html, url: url.toString() })
+      }
     }
   }
 } catch (err) {
@@ -62,11 +65,7 @@ try {
             </div>
             <div>
               {metadata && metadata.image && (
-                <img
-                  src={metadata.image}
-                  alt="Site image of the bookmark"
-                  loading="lazy"
-                />
+                <img src={metadata.image} alt="Site image of the bookmark" loading="lazy" />
               )}
             </div>
           </a>

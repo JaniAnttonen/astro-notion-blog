@@ -1,7 +1,7 @@
 ---
-import * as interfaces from '../../lib/notion/interfaces'
-import { filePath } from '../../lib/blog-helpers'
-import Caption from './Caption.astro'
+import { filePath } from "../../lib/blog-helpers"
+import * as interfaces from "../../lib/types/interfaces"
+import Caption from "./Caption.astro"
 
 export interface Props {
   block: interfaces.Block
@@ -9,14 +9,14 @@ export interface Props {
 
 const { block } = Astro.props
 
-let url: URL
+let url: URL | null = null
 try {
-  url = new URL(block.File?.External?.Url || block.File?.File?.Url)
+  url = new URL(block.File?.External?.Url || block.File?.File?.Url || "")
 } catch (err) {
   console.error(`Invalid file URL. error: ${err}`)
 }
 
-const filename = decodeURIComponent(url.pathname.split('/').slice(-1)[0])
+const filename = decodeURIComponent(url?.pathname.split("/").slice(-1)[0] || "")
 ---
 
 <div class="file">
@@ -24,20 +24,20 @@ const filename = decodeURIComponent(url.pathname.split('/').slice(-1)[0])
     {
       url && (
         <a
-          href={block.File.External ? url.String() : filePath(url)}
+          href={block.File?.External ? url?.toString() : filePath(url)}
           target="_blank"
           rel="noopener noreferrer"
         >
           <img
             src="https://www.notion.so/icons/document_gray.svg"
             alt="File icon in a file block"
-          />{' '}
+          />{" "}
           {filename}
         </a>
       )
     }
   </div>
-  <Caption richTexts={block.File.Caption} />
+  <Caption richTexts={block.File?.Caption} />
 </div>
 
 <style>

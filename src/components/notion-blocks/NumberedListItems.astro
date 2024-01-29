@@ -1,9 +1,8 @@
 ---
-import * as interfaces from '../../lib/interfaces.ts'
-import { snakeToKebab } from '../../lib/style-helpers.ts'
-import RichText from './RichText.astro'
-import NotionBlocks from '../NotionBlocks.astro'
-import '../../styles/notion-color.css'
+import { snakeToKebab } from "../../lib/style-helpers.ts"
+import * as interfaces from "../../lib/types/interfaces.ts"
+import NotionBlocks from "../NotionBlocks.astro"
+import RichText from "./RichText.astro"
 
 export interface Props {
   block: interfaces.Block
@@ -13,27 +12,28 @@ export interface Props {
 
 const { block, level, headings } = Astro.props
 
-const listTypes = ['i', '1', 'a']
+type ListType = "i" | "1" | "a" | "A" | "I" | null | undefined
+const listTypes: ListType[] = ["i", "1", "a"]
 ---
 
 <ol type={listTypes[level % 3]}>
   {
-    block.ListItems.filter(
-      (b: interfaces.Block) => b.Type === 'numbered_list_item'
-    ).map((b: interfaces.Block) => (
-      <li class={snakeToKebab(b.NumberedListItem.Color)}>
-        {b.NumberedListItem.RichTexts.map((richText: interfaces.RichText) => (
-          <RichText richText={richText} />
-        ))}
-        {b.HasChildren && (
-          <NotionBlocks
-            blocks={b.NumberedListItem.Children}
-            level={level + 1}
-            headings={headings}
-          />
-        )}
-      </li>
-    ))
+    block.ListItems?.filter((b: interfaces.Block) => b.Type === "numbered_list_item").map(
+      (b: interfaces.Block) => (
+        <li class={snakeToKebab(b.NumberedListItem.Color)}>
+          {b.NumberedListItem?.RichTexts.map((richText: interfaces.RichText) => (
+            <RichText richText={richText} />
+          ))}
+          {b.HasChildren && (
+            <NotionBlocks
+              blocks={b.NumberedListItem?.Children}
+              level={level + 1}
+              headings={headings}
+            />
+          )}
+        </li>
+      )
+    )
   }
 </ol>
 

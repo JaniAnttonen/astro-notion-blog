@@ -1,8 +1,8 @@
 ---
-import * as interfaces from '../../lib/interfaces.ts'
-import { buildHeadingId } from '../../lib/blog-helpers.ts'
-import RichText from './RichText.astro'
-import NotionBlocks from '../NotionBlocks.astro'
+import { buildHeadingId } from "../../lib/blog-helpers.ts"
+import * as interfaces from "../../lib/types/interfaces.ts"
+import NotionBlocks from "../NotionBlocks.astro"
+import RichText from "./RichText.astro"
 
 export interface Props {
   block: interfaces.Block
@@ -11,11 +11,11 @@ export interface Props {
 
 const { block, headings } = Astro.props
 
-const id = buildHeadingId(block.Heading3)
+const id = block.Heading3 && buildHeadingId(block.Heading3)
 ---
 
 {
-  block.Heading3.IsToggleable ? (
+  block.Heading3?.IsToggleable ? (
     <details class="toggle">
       <summary>
         <a href={`#${id}`} id={id}>
@@ -35,7 +35,7 @@ const id = buildHeadingId(block.Heading3)
   ) : (
     <a href={`#${id}`} id={id}>
       <h5>
-        {block.Heading3.RichTexts.map((richText: interfaces.RichText) => (
+        {block.Heading3?.RichTexts.map((richText: interfaces.RichText) => (
           <RichText richText={richText} />
         ))}
       </h5>
